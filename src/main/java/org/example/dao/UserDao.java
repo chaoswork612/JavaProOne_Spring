@@ -1,7 +1,7 @@
-package dao;
+package org.example.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
-import model.User;
+import org.example.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
@@ -12,9 +12,7 @@ import java.util.List;
 
 @Repository
 public class UserDao {
-
     private final HikariDataSource dataSource;
-
 
     public UserDao(HikariDataSource dataSource) {
         this.dataSource = new HikariDataSource(dataSource);

@@ -1,14 +1,13 @@
-package service;
+package org.example.service;
 
-import dao.UserDao;
-import model.User;
+import org.example.dao.UserDao;
+import org.example.model.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class UserService {
-
     private final UserDao userDao;
 
     public UserService(UserDao userDao) {

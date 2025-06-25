@@ -1,13 +1,15 @@
-import config.AppConfig;
-import model.User;
+package org.example;
+import org.example.model.User;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import service.UserService;
+import org.springframework.context.annotation.ComponentScan;
+import org.example.service.UserService;
 
 import java.util.List;
 
+@ComponentScan
 public class Main {
     public static void main(String[] args) {
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Main.class);
 
         UserService userService = context.getBean(UserService.class);
 
