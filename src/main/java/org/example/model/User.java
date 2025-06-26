@@ -1,27 +1,33 @@
 package org.example.model;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Objects;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "users")
+@ToString
 public class User {
-    private final Long id;
-    private final String username;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "username")
+    private String username;
 
-    public User(Long id, String username) {
-        this.id = id;
-        this.username = username;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getUsername() {
-        return username;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return getId() != null && Objects.equals(getId(), user.getId());
     }
 
     @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", username='" + username + '\'' +
-                '}';
+    public final int hashCode() {
+        return getClass().hashCode();
     }
 }

@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - logicalFilePath: path-independent
+  - changeSet:
+      id: insert.users
+      author: org.example
+      changes:
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "john1_doe1"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "john2_doe2"
+        - insert:
+            tableName: users
+            columns:
+              - column:
+                  name: username
+                  value: "john3_doe3"
