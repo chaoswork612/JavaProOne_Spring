@@ -1,6 +1,6 @@
 package org.example.repository;
 
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 import org.example.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "INSERT INTO spring.users (username) values (:username)", nativeQuery = true)
     void insertUserByUsername(@Param("username") String username);
 
-    @org.springframework.lang.NonNull
+    @NonNull
     User getReferenceById(@NonNull Long id);
 
     @Query(value = "SELECT u FROM User u")
