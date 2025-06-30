@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - logicalFilePath: path-independent
+  - changeSet:
+      id: create.table.users
+      author: org.example
+      preConditions:
+        - onFail: MARK_RAN
+        - onFailMessage: Table already exists
+        - onSqlOutput: IGNORE
+        - not:
+            tableExists:
+              tableName: users
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
