@@ -1,6 +1,6 @@
 package org.example.repository;
 
-import jakarta.transaction.Transactional;
+import lombok.NonNull;
 import org.example.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,23 +14,16 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     @Modifying
-    @Transactional
-    @Query(value = "INSERT INTO User (username) values (:username)")
-    void insertUser(@Param("username") String username);
+    @Query(value = "INSERT INTO spring.users (username) values (:username)", nativeQuery = true)
+    void insertUserByUsername(@Param("username") String username);
 
-    @Modifying
-    @Transactional
-    default void insertUser(User user) {
-        save(user);
-    }
-
-    List<User> getUserById(Long id);
+    @org.springframework.lang.NonNull
+    User getReferenceById(@NonNull Long id);
 
     @Query(value = "SELECT u FROM User u")
     List<User> getAllUsers();
 
-    @Transactional
-    void deleteUserById(Long id);
+    void deleteById(@NonNull Long id);
 
     List<User> getUsersByUsername(String username);
 }

@@ -1,6 +1,6 @@
 package org.example.service;
 
-import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.repository.UserRepository;
@@ -15,17 +15,18 @@ public class UserService implements CommandLineRunner {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public void run(String... args) {
         log.info("UserService started");
         log.info("Get user by Id:");
-        User user = userRepository.getUserById(1L).stream().findAny().orElseThrow(EntityNotFoundException::new);
-        log.info("User by Id: {}", user.toString());
+        User user = userRepository.getReferenceById(1L);
+        log.info("User by Id: {}", user);
         log.info("Get all users:");
         userRepository.getAllUsers().forEach(u -> log.info("{}", u.toString()));
         log.info("Create new user using username parameter:");
         User newUser = new User();
         newUser.setUsername("john10_doe10");
-        userRepository.insertUser(newUser.getUsername());
+        userRepository.insertUserByUsername(newUser.getUsername());
         log.info(
                 "New user with username {} is created",
                 userRepository
@@ -37,14 +38,14 @@ public class UserService implements CommandLineRunner {
         userRepository.getAllUsers().forEach(u -> log.info("{}", u.toString()));
         log.info("Delete user by Id:");
         Long userId = user.getId();
-        userRepository.deleteUserById(userId);
+        userRepository.deleteById(userId);
         log.info("User with id {} is deleted", userId);
         log.info("Get all users:");
         userRepository.getAllUsers().forEach(u -> log.info("{}", u.toString()));
         log.info("Create new user using User Entity:");
         User anotherUser = new User();
         anotherUser.setUsername("john11_doe11");
-        userRepository.insertUser(anotherUser);
+        userRepository.save(anotherUser);
         log.info(
                 "New user with username {} is created",
                 userRepository
