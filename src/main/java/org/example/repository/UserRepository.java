@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -17,13 +18,12 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "INSERT INTO spring.users (username) values (:username)", nativeQuery = true)
     void insertUserByUsername(@Param("username") String username);
 
-    @NonNull
-    User getReferenceById(@NonNull Long id);
+    Optional<User> getUserById(Long id);
 
     @Query(value = "SELECT u FROM User u")
     List<User> getAllUsers();
 
     void deleteById(@NonNull Long id);
 
-    List<User> getUsersByUsername(String username);
+    Optional<User> getUserByUsername(String username);
 }
