@@ -1,0 +1,97 @@
+databaseChangeLog:
+  - logicalFilePath: path-independent
+  - changeSet:
+      id: insert.products
+      author: org.example
+      changes:
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123456
+              - column:
+                  name: balance
+                  value: 123456.00
+              - column:
+                  name: product_type
+                  value: account
+              - column:
+                  name: user_id
+                  value: 1
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123457
+              - column:
+                  name: balance
+                  value: 123457.00
+              - column:
+                  name: product_type
+                  value: card
+              - column:
+                  name: user_id
+                  value: 2
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123458
+              - column:
+                  name: balance
+                  value: 123458.00
+              - column:
+                  name: product_type
+                  value: account
+
+              - column:
+                  name: user_id
+                  value: 3
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123459
+              - column:
+                  name: balance
+                  value: 123459.00
+              - column:
+                  name: product_type
+                  value: account
+              - column:
+                  name: user_id
+                  value: 2
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123460
+              - column:
+                  name: balance
+                  value: 123460.00
+              - column:
+                  name: product_type
+                  value: card
+              - column:
+                  name: user_id
+                  value: 1
+        - insert:
+            tableName: products
+            columns:
+              - column:
+                  name: account_number
+                  value: 123461
+              - column:
+                  name: balance
+                  value: 123461.00
+              - column:
+                  name: product_type
+                  value: card
+              - column:
+                  name: user_id
+                  value: 3
