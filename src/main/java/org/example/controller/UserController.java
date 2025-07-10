@@ -2,7 +2,8 @@ package org.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.dto.CreateUserRequestDto;
-import org.example.model.User;
+import org.example.dto.CreateUserResponseDto;
+import org.example.dto.GetUserDto;
 import org.example.service.ProductService;
 import org.example.service.UserService;
 import org.springframework.web.bind.annotation.*;
@@ -17,31 +18,31 @@ public class UserController {
     private final ProductService productService;
 
     @GetMapping("/")
-    public List<User> getAllUsers() {
+    public List<GetUserDto> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/user/id/{userId}")
-    public User getUserById(@PathVariable("userId") Long id) {
+    @GetMapping("/id/{userId}")
+    public GetUserDto getUserById(@PathVariable("userId") Long id) {
         return userService.getUserById(id);
     }
 
-    @GetMapping("/user/username/{username}")
-    public User getUserByUsername(@PathVariable("username") String username) {
+    @GetMapping("/username/{username}")
+    public GetUserDto getUserByUsername(@PathVariable("username") String username) {
         return userService.getUserByUsername(username);
     }
 
-    @PostMapping("/user/")
-    public User createUser(@RequestBody CreateUserRequestDto requestDto) {
+    @PostMapping("/")
+    public CreateUserResponseDto createUser(@RequestBody CreateUserRequestDto requestDto) {
         return userService.createUser(requestDto);
     }
 
-    @PostMapping("/user/{username}")
+    @PostMapping("/{username}")
     public void createUserByUsername(@PathVariable("username") String username) {
         userService.createUserByUsername(username);
     }
 
-    @DeleteMapping("/user/{userId}")
+    @DeleteMapping("/{userId}")
     public void deleteUserById(@PathVariable("userId") Long id) {
         productService.deleteProductsByUserId(id);
         userService.deleteUserById(id);

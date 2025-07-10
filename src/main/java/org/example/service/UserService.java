@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.CreateUserRequestDto;
+import org.example.dto.CreateUserResponseDto;
+import org.example.dto.GetUserDto;
 import org.example.model.User;
 import org.example.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,23 +21,27 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public List<User> getAllUsers() {
-        return userRepository.getAllUsers();
+    public List<GetUserDto> getAllUsers() {
+        List<User> users = userRepository.getAllUsers();
+        return users.stream().map(user -> new GetUserDto(user.getId(), user.getUsername())).toList();
     }
 
-    public User getUserById(Long id) {
-        return userRepository.getUserById(id).orElseThrow(EntityNotFoundException::new);
+    public GetUserDto getUserById(Long id) {
+        User user = userRepository.getUserById(id).orElseThrow(EntityNotFoundException::new);
+        return new GetUserDto(user.getId(), user.getUsername());
     }
 
-    public User getUserByUsername(String username) {
-        return userRepository.getUserByUsername(username).orElseThrow(EntityNotFoundException::new);
+    public GetUserDto getUserByUsername(String username) {
+        User user = userRepository.getUserByUsername(username).orElseThrow(EntityNotFoundException::new);
+        return new GetUserDto(user.getId(), user.getUsername());
     }
 
-    public User createUser(CreateUserRequestDto requestDto) {
-        return userRepository.save(Optional.of(new User()).map(u -> {
+    public CreateUserResponseDto createUser(CreateUserRequestDto requestDto) {
+        User user =  userRepository.save(Optional.of(new User()).map(u -> {
             u.setUsername(requestDto.getUsername());
             return u;
         }).orElseThrow(EntityNotFoundException::new));
+        return new CreateUserResponseDto(user.getId(), user.getUsername());
     }
 
     public void createUserByUsername(String username) {

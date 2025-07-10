@@ -7,7 +7,6 @@ import java.math.BigInteger;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class CreateProductRequestDto {
     private BigInteger accountNumber;

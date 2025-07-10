@@ -5,6 +5,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.dto.CreateProductRequestDto;
+import org.example.dto.CreateProductResponseDto;
+import org.example.dto.GetProductDto;
 import org.example.model.Product;
 import org.example.model.User;
 import org.example.repository.ProductRepository;
@@ -22,23 +24,39 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    public List<Product> getProductsByUserId(Long userId) {
-        return productRepository.findProductsByUserId(userId);
+    public List<GetProductDto> getProductsByUserId(Long userId) {
+        List<Product> products = productRepository.findProductsByUserId(userId);
+        return products.stream().map(product ->
+                new GetProductDto(
+                        product.getId(),
+                        product.getAccountNumber(),
+                        product.getBalance(),
+                        product.getProductType(),
+                        product.getUser())
+        ).toList();
     }
 
-    public Product getProductById(Long productId) {
-        return productRepository.findProductById(productId).orElseThrow(EntityNotFoundException::new);
+    public GetProductDto getProductById(Long productId) {
+        Product product = productRepository.findProductById(productId).orElseThrow(EntityNotFoundException::new);
+        return new GetProductDto(product.getId(), product.getAccountNumber(), product.getBalance(), product.getProductType(), product.getUser());
     }
 
-    public Product saveProduct(CreateProductRequestDto requestDto) {
-        return productRepository.save(Optional.of(new Product()).map(p -> {
+    public CreateProductResponseDto saveProduct(CreateProductRequestDto requestDto) {
+        Product product = productRepository.save(Optional.of(new Product()).map(p -> {
             p.setAccountNumber(requestDto.getAccountNumber());
             p.setProductType(requestDto.getProductType());
             p.setBalance(requestDto.getBalance());
             User user = userRepository.getUserByUsername(requestDto.getUsername()).orElseThrow(EntityNotFoundException::new);
             p.setUser(user);
             return p;
-        }).orElseThrow(EntityNotFoundException::new));
+        }).orElseThrow());
+        return new CreateProductResponseDto(
+                product.getId(),
+                product.getAccountNumber(),
+                product.getProductType(),
+                product.getBalance(),
+                product.getUser().getId()
+        );
     }
 
     public void deleteProduct(Long productId) {
