@@ -8,6 +8,7 @@ import java.math.BigInteger;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CreateProductRequestDto {
     private BigInteger accountNumber;
     private BigDecimal balance;

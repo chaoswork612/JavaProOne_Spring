@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.dto.CreateProductRequestDto;
 import org.example.dto.CreateProductResponseDto;
 import org.example.dto.GetProductDto;
+import org.example.exception.ProductNotFoundException;
 import org.example.service.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +17,12 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/user/{userId}")
-    public List<GetProductDto> getProductsByUserId(@PathVariable("userId") Long id) {
+    public List<GetProductDto> getProductsByUserId(@PathVariable("userId") Long id) throws ProductNotFoundException {
         return productService.getProductsByUserId(id);
     }
 
     @GetMapping("/{productId}")
-    public GetProductDto getProductById(@PathVariable("productId") Long id) {
+    public GetProductDto getProductById(@PathVariable("productId") Long id) throws ProductNotFoundException {
         return productService.getProductById(id);
     }
 
