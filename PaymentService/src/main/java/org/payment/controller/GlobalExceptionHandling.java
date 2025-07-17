@@ -2,6 +2,7 @@ package org.payment.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.payment.dto.ResponseErrorDto;
+import org.payment.exception.IntegrationException;
 import org.payment.exception.PaymentException;
 import org.payment.exception.ProductNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -32,5 +33,12 @@ public class GlobalExceptionHandling {
     public ResponseErrorDto handleException(ProductNotFoundException ex){
         log.error(ex.getMessage(), ex);
         return new ResponseErrorDto(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(IntegrationException.class)
+    @ResponseStatus(HttpStatus.BAD_GATEWAY)
+    public ResponseErrorDto handleException(IntegrationException ex){
+        log.error(ex.getMessage(), ex);
+        return new ResponseErrorDto(HttpStatus.BAD_GATEWAY.value(), ex.getMessage());
     }
 }

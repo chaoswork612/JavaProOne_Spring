@@ -7,8 +7,6 @@ import org.payment.dto.ExecutePaymentResponseDto;
 import org.payment.service.PaymentService;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/payments")

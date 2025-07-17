@@ -11,12 +11,16 @@ import org.springframework.web.client.RestTemplate;
 public class IntegrationConfiguration {
 
     @Bean
-    public RestTemplate productsClient(IntegrationClientsProperties integrationClientsProperties) {
+    public RestTemplate productsClient(
+            IntegrationClientsProperties integrationClientsProperties,
+            RestTemplateErrorResponseHandler errorHandler
+    ) {
         RestTemplateProperties productsClientProperties = integrationClientsProperties.getProductsClient();
         return new RestTemplateBuilder()
                 .rootUri(productsClientProperties.getUrl())
                 .connectTimeout(productsClientProperties.getConnectTimeout())
                 .readTimeout(productsClientProperties.getReadTimeout())
+                .errorHandler(errorHandler)
                 .build();
     }
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.payment.dto.ExecutePaymentResponseDto;
 import org.payment.dto.GetProductIntegrationResponseDto;
 import org.payment.exception.PaymentException;
-import org.payment.exception.ProductNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -16,12 +15,7 @@ public class PaymentService {
     private final ProductIntegrationService productIntegrationService;
 
     public ExecutePaymentResponseDto executePayment(Long productId, BigDecimal amount) throws PaymentException {
-        GetProductIntegrationResponseDto product;
-        try {
-            product = productIntegrationService.getProductById(productId);
-        } catch (ProductNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        GetProductIntegrationResponseDto product = productIntegrationService.getProductById(productId);
         if (product == null || product.getBalance().compareTo(amount) < 0) {
             throw new PaymentException("Product not found or insufficient funds");
         }

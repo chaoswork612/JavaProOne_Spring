@@ -1,17 +1,14 @@
 package org.payment.config;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.bind.ConstructorBinding;
 
 @Getter
+@Setter
+@AllArgsConstructor
 @ConfigurationProperties(prefix = "integration.clients")
 public class IntegrationClientsProperties {
-    private final RestTemplateProperties productsClient;
-
-    @ConstructorBinding
-    public IntegrationClientsProperties(RestTemplateProperties productsClient) {
-        this.productsClient = productsClient;
-    }
-
+    private RestTemplateProperties productsClient;
 }
