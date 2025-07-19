@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.dto.CreateProductRequestDto;
 import org.example.dto.CreateProductResponseDto;
 import org.example.dto.GetProductDto;
+import org.example.exception.ProductNotFoundException;
 import org.example.model.Product;
 import org.example.model.User;
 import org.example.repository.ProductRepository;
@@ -24,20 +25,23 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
 
-    public List<GetProductDto> getProductsByUserId(Long userId) {
+    public List<GetProductDto> getProductsByUserId(Long userId) throws ProductNotFoundException {
         List<Product> products = productRepository.findProductsByUserId(userId);
-        return products.stream().map(product ->
-                new GetProductDto(
-                        product.getId(),
-                        product.getAccountNumber(),
-                        product.getBalance(),
-                        product.getProductType(),
-                        product.getUser())
-        ).toList();
+        if (!products.isEmpty()) {
+            return products.stream().map(product ->
+                    new GetProductDto(
+                            product.getId(),
+                            product.getAccountNumber(),
+                            product.getBalance(),
+                            product.getProductType(),
+                            product.getUser())
+            ).toList();
+        } else throw new ProductNotFoundException(String.format("Products for user with id %d were not found", userId));
     }
 
-    public GetProductDto getProductById(Long productId) {
-        Product product = productRepository.findProductById(productId).orElseThrow(EntityNotFoundException::new);
+    public GetProductDto getProductById(Long productId) throws ProductNotFoundException {
+        Product product = productRepository.findProductById(productId)
+                .orElseThrow(new ProductNotFoundException(String.format("Product with id %d was not found", productId)));
         return new GetProductDto(product.getId(), product.getAccountNumber(), product.getBalance(), product.getProductType(), product.getUser());
     }
 

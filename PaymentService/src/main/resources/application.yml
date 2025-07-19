@@ -1,0 +1,9 @@
+server:
+  port: 8282
+
+integration:
+  clients:
+    products-client:
+      url: "http://localhost:8181"
+      connect-timeout: 5s
+      read-timeout: 10S
