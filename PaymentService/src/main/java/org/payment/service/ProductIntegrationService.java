@@ -1,6 +1,7 @@
 package org.payment.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.payment.dto.GetProductIntegrationResponseDto;
 import org.payment.dto.GetProductResponseDto;
 import org.springframework.stereotype.Service;
@@ -8,8 +9,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductIntegrationService {
@@ -30,11 +31,12 @@ public class ProductIntegrationService {
     }
 
     public List<GetProductIntegrationResponseDto> getProductsByUserId(Long userId) {
-        List<GetProductResponseDto> responseDtos = Arrays.asList(Objects.requireNonNull(productsClient.getForObject(
+        List<GetProductResponseDto> responseDtos = Arrays.asList(productsClient.getForObject(
                     "/api/products/user/{userId}",
                     GetProductResponseDto[].class,
                     userId
-        )));
+        ));
+        assert !responseDtos.isEmpty();
         return responseDtos
                 .stream()
                 .map(getProductResponseDto -> new GetProductIntegrationResponseDto(

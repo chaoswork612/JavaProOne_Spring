@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.RestClientException;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,6 +34,13 @@ public class GlobalExceptionHandling {
     public ResponseErrorDto handleException(ProductNotFoundException ex){
         log.error(ex.getMessage(), ex);
         return new ResponseErrorDto(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+    }
+
+    @ExceptionHandler(RestClientException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseErrorDto handleException(RestClientException ex){
+        log.error(ex.getMessage(), ex);
+        return new ResponseErrorDto(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 
     @ExceptionHandler(IntegrationException.class)
