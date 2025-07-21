@@ -11,6 +11,7 @@ import org.limit.repository.UserLimitRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -71,9 +72,8 @@ public class UserLimitService {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void resetLimits() {
-        userLimitRepository.findAll().forEach(userLimit -> {
-            userLimit.setDailyLimit(10000.00);
-            userLimitRepository.save(userLimit);
-        });
+        List<UserLimit> userLimits = userLimitRepository.findAll();
+        List<Long> userIds = userLimits.stream().map(UserLimit::getUserId).toList();
+        userLimitRepository.updateUserLimits(10000D, userIds);
     }
 }
