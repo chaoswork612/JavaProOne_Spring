@@ -7,8 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ProcessPaymentResponseDto {
-    private Double remainingDailyLimit;
-    private Double processedAmount;
-
+public class RestoreLimitResponse {
+    private Long limitId;
+    private String resultMessage;
 }

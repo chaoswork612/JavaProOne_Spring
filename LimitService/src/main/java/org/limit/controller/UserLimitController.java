@@ -1,9 +1,7 @@
 package org.limit.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.limit.dto.ProcessPaymentRequestDto;
-import org.limit.dto.ProcessPaymentResponseDto;
-import org.limit.dto.UserLimitResponseDto;
+import org.limit.dto.*;
 import org.limit.service.UserLimitService;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +17,13 @@ public class UserLimitController {
         return userLimitService.getCurrentLimit(userId);
     }
 
-    @PostMapping("/process-payment")
-    public ProcessPaymentResponseDto processPayment(@RequestBody ProcessPaymentRequestDto paymentRequestDto) {
-        return userLimitService.onPaymentProcess(paymentRequestDto);
+    @PostMapping("/reserve-limit")
+    public ReserveLimitResponse reserveLimit(@RequestBody ReserveLimitRequest paymentRequestDto) {
+        return userLimitService.reserveLimit(paymentRequestDto);
+    }
+
+    @PostMapping("/restore-limit")
+    public RestoreLimitResponse restoreLimit(@RequestBody RestoreLimitRequest restoreLimitRequest) {
+        return userLimitService.restoreLimit(restoreLimitRequest);
     }
 }

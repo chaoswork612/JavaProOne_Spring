@@ -5,7 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.limit.dto.*;
-import org.limit.exception.ProcessPaymentException;
+import org.limit.exception.ReserveLimitException;
 import org.limit.model.UserLimit;
 import org.limit.repository.UserLimitRepository;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -28,33 +28,43 @@ public class UserLimitService {
                 ).orElseGet(() -> createUserLimit(userId));
     }
 
-    public ProcessPaymentResponseDto onPaymentProcess(ProcessPaymentRequestDto paymentRequestDto) {
-        UserLimitResponseDto userLimitsDto = getCurrentLimit(paymentRequestDto.userId());
-        userLimitsDto.setDailyLimit(userLimitsDto.getDailyLimit() - paymentRequestDto.amount());
-        userLimitRepository.save(Optional.of(new UserLimit()).map(ul -> {
-            ul.setId(userLimitsDto.getUserLimitId());
-            ul.setDailyLimit(userLimitsDto.getDailyLimit());
-            ul.setUserId(userLimitsDto.getUserId());
-            return ul;
-        }).orElseThrow());
-        if (paymentRequestDto.isPaymentSuccessful()) {
-            return new ProcessPaymentResponseDto(userLimitsDto.getDailyLimit(), paymentRequestDto.amount());
+    public ReserveLimitResponse reserveLimit(ReserveLimitRequest paymentRequestDto) {
+        if (paymentRequestDto.getIsPaymentSuccessful()) {
+            UserLimitResponseDto userLimitsDto = getCurrentLimit(paymentRequestDto.getUserId());
+            Double newDailyLimit = userLimitsDto.getDailyLimit() - paymentRequestDto.getAmount();
+            userLimitsDto.setDailyLimit(newDailyLimit);
+            UserLimit userLimit = Optional.of(new UserLimit())
+                    .map(ul -> {
+                        ul.setId(userLimitsDto.getUserLimitId());
+                        ul.setDailyLimit(userLimitsDto.getDailyLimit());
+                        ul.setUserId(userLimitsDto.getUserId());
+                        return ul;
+                    }).orElseThrow();
+            userLimitRepository.save(userLimit);
+            return new ReserveLimitResponse(
+                    userLimitsDto.getUserId(),
+                    userLimitsDto.getDailyLimit(),
+                    paymentRequestDto.getAmount()
+            );
         } else {
-            restoreLimit(paymentRequestDto.userId(), paymentRequestDto.amount());
-            throw new ProcessPaymentException("Payment was not successful");
+            throw new ReserveLimitException("Reserve Limit was not successful");
         }
     }
 
-    public void restoreLimit(Long userId, Double amount) {
-        UserLimit userLimit = userLimitRepository.findUserLimitByUserId(userId)
+    public RestoreLimitResponse restoreLimit(RestoreLimitRequest restoreLimitRequest) {
+        UserLimit userLimit = userLimitRepository
+                .findUserLimitByUserId(restoreLimitRequest.getUserId())
                 .orElseThrow(EntityNotFoundException::new);
-        userLimit.setDailyLimit(userLimit.getDailyLimit() + amount);
+        userLimit.setDailyLimit(userLimit.getDailyLimit() + restoreLimitRequest.getAmount());
         userLimitRepository.save(userLimit);
+        return new RestoreLimitResponse(userLimit.getId(), "Limit restore was successful");
     }
 
     private UserLimitResponseDto createUserLimit(Long userId) {
         UserLimit userLimit = userLimitRepository.save(
-                userLimitRepository.findUserLimitByUserId(userId).orElse(new UserLimit(10000D, userId))
+                userLimitRepository
+                        .findUserLimitByUserId(userId)
+                        .orElse(new UserLimit(10000D, userId))
         );
         return new UserLimitResponseDto(userLimit.getId(), userLimit.getDailyLimit(), userLimit.getUserId());
     }
