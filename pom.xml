@@ -11,6 +11,7 @@
     <modules>
         <module>PaymentService</module>
         <module>ProductService</module>
+        <module>LimitService</module>
     </modules>
 
     <properties>
