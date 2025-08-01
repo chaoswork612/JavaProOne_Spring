@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class ReserveLimitRequest {
     private Long userId;
-    Double amount;
-    Boolean isPaymentSuccessful;
+    private Double amount;
+    private boolean isPaymentSuccessful;
 }

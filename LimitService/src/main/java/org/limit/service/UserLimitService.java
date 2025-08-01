@@ -11,9 +11,6 @@ import org.limit.repository.UserLimitRepository;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -30,17 +27,11 @@ public class UserLimitService {
     }
 
     public ReserveLimitResponse reserveLimit(ReserveLimitRequest paymentRequestDto) {
-        if (paymentRequestDto.getIsPaymentSuccessful()) {
+        if (paymentRequestDto.isPaymentSuccessful()) {
             UserLimitResponseDto userLimitsDto = getCurrentLimit(paymentRequestDto.getUserId());
             Double newDailyLimit = userLimitsDto.getDailyLimit() - paymentRequestDto.getAmount();
             userLimitsDto.setDailyLimit(newDailyLimit);
-            UserLimit userLimit = Optional.of(new UserLimit())
-                    .map(ul -> {
-                        ul.setId(userLimitsDto.getUserLimitId());
-                        ul.setDailyLimit(userLimitsDto.getDailyLimit());
-                        ul.setUserId(userLimitsDto.getUserId());
-                        return ul;
-                    }).orElseThrow();
+            UserLimit userLimit = new UserLimit(userLimitsDto.getDailyLimit(), userLimitsDto.getUserId());
             userLimitRepository.save(userLimit);
             return new ReserveLimitResponse(
                     userLimitsDto.getUserId(),
@@ -72,8 +63,6 @@ public class UserLimitService {
 
     @Scheduled(cron = "0 0 0 * * ?")
     public void resetLimits() {
-        List<UserLimit> userLimits = userLimitRepository.findAll();
-        List<Long> userIds = userLimits.stream().map(UserLimit::getUserId).toList();
-        userLimitRepository.updateUserLimits(10000D, userIds);
+        userLimitRepository.updateUserLimits(10000D);
     }
 }
