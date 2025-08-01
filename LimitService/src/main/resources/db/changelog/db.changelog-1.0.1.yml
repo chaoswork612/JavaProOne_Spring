@@ -1,0 +1,33 @@
+databaseChangeLog:
+  - logicalFilePath: path-independent
+  - changeSet:
+      id: insert.user_limits
+      author: org.example
+      changes:
+        - insert:
+            tableName: user_limits
+            columns:
+              - column:
+                  name: daily_limit
+                  value: 10000.00
+              - column:
+                  name: user_id
+                  value: 1
+        - insert:
+            tableName: user_limits
+            columns:
+              - column:
+                  name: daily_limit
+                  value: 10000.00
+              - column:
+                  name: user_id
+                  value: 2
+        - insert:
+            tableName: user_limits
+            columns:
+              - column:
+                  name: daily_limit
+                  value: 10000.00
+              - column:
+                  name: user_id
+                  value: 3

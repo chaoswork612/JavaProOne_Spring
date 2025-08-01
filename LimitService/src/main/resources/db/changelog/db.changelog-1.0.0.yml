@@ -1,0 +1,53 @@
+databaseChangeLog:
+  - logicalFilePath: path-independent
+  - changeSet:
+      id: create.table.user_limits
+      author: org.example
+      preConditions:
+        - onFail: MARK_RAN
+        - onFailMessage: Table already exists
+        - onSqlOutput: IGNORE
+        - not:
+            tableExists:
+              tableName: user_limits
+      changes:
+        - createTable:
+            tableName: user_limits
+            columns:
+              - column:
+                  name: id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: daily_limit
+                  type: numeric
+                  defaultValue: 10000.00
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_products_users
+                    references: users(id)
+  - changeSet:
+      id: addCheckConstraint.user_limits.daily_limit_check
+      author: org.example
+      changes:
+        - sql:
+            dbms: 'postgresql'
+            endDelimiter: \nGO
+            splitStatements: true
+            sql: ALTER TABLE user_limits ADD CONSTRAINT daily_limit_check CHECK (daily_limit >= 0);
+            stripComments: true
+  - changeSet:
+      id: addCheckConstraint.user_limits.id_check
+      author: org.example
+      changes:
+        - sql:
+            dbms: 'postgresql'
+            endDelimiter: \nGO
+            splitStatements: true
+            sql: ALTER TABLE user_limits ADD CONSTRAINT id_check CHECK (id >= 1 AND id <= 100);
+            stripComments: true
